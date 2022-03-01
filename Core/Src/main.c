@@ -257,6 +257,51 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	  if(txBuff[0] == 's' && txBuff[1] == 't' && txBuff[2] == 'a' && txBuff[3] == 'r' && txBuff[4] == 't') 			// döngüye girmesi gereken komutlar eklendi ve testler yapıldı.
+	  {
+		  echoTaskWorkingState = true;
+	  }
+	  else if(txBuff[0] == 's' && txBuff[1] == 't' && txBuff[2] == 'o' && txBuff[3] == 'p')
+	  {
+		  echoTaskWorkingState = false;
+		  ledState = LED_1S;
+	  }
+	  else
+	  {
+
+	  }
+
+	  if(txBuff[0] == 'l' && txBuff[1] == 'e' && txBuff[2] == 'd' && txBuff[3] == 'o' && txBuff[4] == 'n' && txBuff[5] == '=')
+	  {
+		  //txBuff[6];	// yüzler basamağı
+		  //txBuff[7];	// onlar basamağı
+		  //txBuff[8];	// birler basamağı
+
+		  gelenZaman = (txBuff[6] - 48) * 100 + (txBuff[7] - 48) * 10 + (txBuff[8] - 48) * 1;
+		  ledState = LED_ON;
+	  }
+
+	  if(txBuff[0] == 'l' && txBuff[1] == 'e' && txBuff[2] == 'd' && txBuff[3] == 'o' && txBuff[4] == 'f' && txBuff[5] == 'f' && txBuff[6] == '=')
+	  {
+		  //txBuff[6];	// yüzler basamağı
+		  //txBuff[7];	// onlar basamağı
+		  //txBuff[8];	// birler basamağı
+
+		  gelenZaman = (txBuff[7] - 48) * 100 + (txBuff[8] - 48) * 10 + (txBuff[9] - 48) * 1;
+		  ledState = LED_OFF;
+	  }
+
+	  if(echoTaskWorkingState == true)
+	  {
+		  UART_Echo_Task(txBuff, txBuffLength);
+		  LED_Control_Task(ledState, gelenZaman);
+	  }
+	  else
+	  {
+		  LED_Control_Task(ledState, 1000);
+	  }
+
   }
   /* USER CODE END 3 */
 }
