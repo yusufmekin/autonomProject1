@@ -94,6 +94,126 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)					// Uart interrupt function aktif edildi.
+{
+	if(huart == &huart2)
+	{
+		rxBuff[rxIndex] = rxTempBuff[0];
+
+		if(rxBuff[rxIndex] == '\n')
+		{
+			for(int i = 0; i <= rxIndex; i++)
+				txBuff[i] = rxBuff[i];									// Echo için txBuff'a alındı.
+
+			newMessageArrive = 1;
+
+			for(int i = 0; i <= rxIndex; i++)
+				rxBuff[i] = 0;
+
+			txBuffLength = rxIndex + 1;
+
+			rxIndex = 0;
+		}
+		else
+		{
+			rxIndex++;
+		}
+
+		HAL_UART_Receive_IT(&huart2, rxTempBuff, 1);
+	}
+}
+
+
+// Bir dizi alacağım için dizinin ismini buraya girdiğimde aslında dizinin adresini vermiş olacağım.
+void UART_Echo_Task(uint8_t* receiveMesage, uint8_t receiveMessageLength)
+{
+	if(newMessageArrive)
+	{
+		HAL_UART_Transmit_IT(&huart2, receiveMesage, receiveMessageLength);
+
+		newMessageArrive = 0;
+	}
+	else
+	{
+
+	}
+}
+
+void LED_Control_Task(uint8_t state, uint32_t time)
+{
+	if(state == LED_ON)
+	{
+		// Önce led yakma işlemi yapılacak		-> time süresi boyunca led yanacak
+		// Sonra led söndürme işlemi yapılacak	-> 1000-time süresi boyunca led sönük kalacak
+
+		if(ledOnZamanSayaci == 0 && waitLedOff == 0)
+		{
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+			ledOffZamanSayaci = 0;
+			ledOnZamanSayaci = time;
+			waitLedOff = 1;
+		}
+
+		if(ledOnZamanSayaci < 1)
+		{
+			ledOnZamanSayaci = 0;
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+
+			if(ledOffZamanSayaci < 1)
+			{
+				ledOffZamanSayaci = 1000 - time;
+
+				waitLedOffCounter++;
+
+				if(waitLedOffCounter > 1)
+				{
+					waitLedOff = 0;
+					waitLedOffCounter = 0;
+				}
+			}
+		}
+
+	}
+	else if(state == LED_OFF)
+	{
+		if(ledOffZamanSayaci == 0 && waitLedOn == 0)
+		{
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+			ledOnZamanSayaci = 0;
+			ledOffZamanSayaci = time;
+			waitLedOn = 1;
+		}
+
+		if(ledOffZamanSayaci < 1)
+		{
+			ledOffZamanSayaci = 0;
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+
+			if(ledOnZamanSayaci < 1)
+			{
+				ledOnZamanSayaci = 1000 - time;
+				waitLedOnCounter++;
+
+				if(waitLedOnCounter > 1)
+				{
+					waitLedOn = 0;
+					waitLedOnCounter = 0;
+				}
+			}
+		}
+	}
+	else	// STOP -> LED 1sn
+	{
+		if(stopZamanSayaci < 1)
+		{
+			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+			stopZamanSayaci = 1000;
+		}
+	}
+}
+
+
+
 /* USER CODE END 0 */
 
 /**
