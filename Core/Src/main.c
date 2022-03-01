@@ -22,13 +22,20 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include "main.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-/* USER CODE END PTD */
+typedef enum {
+	LED_ON = 0,
+	LED_OFF,
+	LED_1S
+}led_state;
 
+/* USER CODE END PTD */
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 /* USER CODE END PD */
@@ -44,6 +51,34 @@ TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+
+uint8_t rxTempBuff[1];
+uint8_t rxBuff[50];
+uint8_t txBuff[50];
+
+uint16_t msTick=0;		// ms cinsinden sayım yapacak değişken		1000
+uint8_t sec; 			// sn cinsinden sayım yapacak değişken		  1
+
+uint16_t controlOnTime = 0;
+uint16_t controlOffTime;
+
+uint8_t rxIndex = 0;
+uint8_t txBuffLength;
+uint8_t uartSuccessCounter;
+uint8_t newMessageArrive = 0;
+
+bool echoTaskWorkingState = false;
+
+uint16_t stopZamanSayaci = 1000;
+uint16_t ledOnZamanSayaci = 0;
+uint16_t ledOffZamanSayaci = 0;
+uint16_t gelenZaman;
+uint8_t waitLedOff = 0;
+uint8_t waitLedOffCounter;
+uint8_t waitLedOn = 0;
+uint8_t waitLedOnCounter;
+uint8_t ledState;
+
 
 /* USER CODE END PV */
 
