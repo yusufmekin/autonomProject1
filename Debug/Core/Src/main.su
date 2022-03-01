@@ -1,0 +1,9 @@
+main.c:97:6:HAL_UART_RxCpltCallback	24	static
+main.c:128:6:UART_Echo_Task	16	static
+main.c:142:6:LED_Control_Task	16	static
+main.c:223:5:main	8	static
+main.c:318:6:SystemClock_Config	88	static
+main.c:358:13:MX_TIM3_Init	32	static
+main.c:403:13:MX_USART2_UART_Init	8	static
+main.c:436:13:MX_GPIO_Init	40	static
+main.c:464:6:Error_Handler	4	static,ignoring_inline_asm

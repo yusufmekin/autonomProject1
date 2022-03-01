@@ -6,12 +6,13 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2022 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
   */
@@ -21,21 +22,20 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
-#include "main.h"
-
+	#include "stdbool.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-typedef enum {
+typedef enum{
 	LED_ON = 0,
 	LED_OFF,
 	LED_1S
 }led_state;
 
 /* USER CODE END PTD */
+
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 /* USER CODE END PD */
@@ -94,7 +94,7 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)					// Uart interrupt function aktif edildi.
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)					// Uart interrupt function
 {
 	if(huart == &huart2)
 	{
@@ -123,8 +123,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)					// Uart interrupt fu
 	}
 }
 
-
-// Bir dizi alacağım için dizinin ismini buraya girdiğimde aslında dizinin adresini vermiş olacağım.
+																			// Camel Case - Deve
+// Bir dizi alacağım için dizinin ismini buraya girdiğimde aslında dizinin adresini vermiş olurum.
 void UART_Echo_Task(uint8_t* receiveMesage, uint8_t receiveMessageLength)
 {
 	if(newMessageArrive)
@@ -248,6 +248,10 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_UART_Receive_IT(&huart2, rxTempBuff, 1);		// huart için başlatılma durumu aktif edildi.
+
+  HAL_TIM_Base_Start_IT(&htim3);					// Timer başlatıldı.
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -258,7 +262,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  if(txBuff[0] == 's' && txBuff[1] == 't' && txBuff[2] == 'a' && txBuff[3] == 'r' && txBuff[4] == 't') 			// döngüye girmesi gereken komutlar eklendi ve testler yapıldı.
+	  if(txBuff[0] == 's' && txBuff[1] == 't' && txBuff[2] == 'a' && txBuff[3] == 'r' && txBuff[4] == 't')
 	  {
 		  echoTaskWorkingState = true;
 	  }
@@ -301,6 +305,7 @@ int main(void)
 	  {
 		  LED_Control_Task(ledState, 1000);
 	  }
+
 
   }
   /* USER CODE END 3 */
@@ -484,3 +489,4 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
